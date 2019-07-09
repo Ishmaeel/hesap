@@ -18,14 +18,20 @@ def findPrev(day):
             return file
 
 
+ini = "Hesap.ini"
+
+if not os.path.exists(ini):
+    print(ini, "not found")
+    exit()
+
 config = configparser.ConfigParser()
-config.read('Hesap.ini')
+config.read(ini)
 
 root = config["DEFAULT"]["root"]
 report = config["DEFAULT"]["report"]
 
-if root == "":
-    print("config not found")
+if root == "" or report == "":
+    print("config key not found")
     exit()
 
 doLast = len(sys.argv) > 1 and sys.argv[1] == "last"
