@@ -2,6 +2,7 @@ import datetime
 import os
 import shutil
 import configparser
+import sys
 
 
 def getFile(day):
@@ -12,7 +13,7 @@ def findPrev(day):
     for x in range(30):
         day = day - datetime.timedelta(1)
         file = getFile(day)
-        print(file)
+        print(":", file)
         if os.path.exists(file):
             return file
 
@@ -27,17 +28,26 @@ if root == "":
     print("config not found")
     exit()
 
+doLast = len(sys.argv) > 1 and sys.argv[1] == "last"
+if doLast:
+    print("Open last.")
+else:
+    print("Copy new.")
+
 now = datetime.datetime.now()
 file = getFile(now)
-print(file)
 
 if not os.path.exists(file):
     source = findPrev(now)
-    shutil.copyfile(source, file)
+    if doLast:
+        file = source
+    else:
+        shutil.copyfile(source, file)
 
 if os.path.exists(file):
-    if (os.path.exists(report)):
+    if (not doLast and os.path.exists(report)):
         os.startfile(report)
+    print(">", file)
     os.startfile(file)
 
 else:
